@@ -75,38 +75,42 @@ class GoogleBooksClient:
         # use an empty list instead.
         for item in data.get("items", []):
 
-            # Extract the book's volume information.
-            # This contains the actual metadata for each book.
-            volume_info = item.get("volumeInfo", {})
-
             try:
-            
-                # Convert the Google Books dictionary into
+                # Convert the complete Google Books item into
                 # an instance of our own Book class.
-                book = self._convert_to_book(volume_info)
+                book = self._convert_to_book(item)
 
                 # Add the Book object to our collection.
                 books.append(book)
+
             except ValueError:
+                # Skip results that don't contain a valid title.
                 continue
 
         # Return the collection of Book objects to the caller.
         return books
 
-    def _convert_to_book(self, volume_info):
+    def _convert_to_book(self, item):
         """
-        Convert a Google Books volumeInfo dictionary into a Book object.
+        Convert a complete Google Books API item into a Book object.
 
         Args:
-            volume_info: A dictionary containing book information
-                         returned by the Google Books API.
+            item: A dictionary containing the complete book information
+                  returned by the Google Books API.
 
         Returns:
             A Book object.
-        """ 
+        """
+
+        # Extract the Google Books ID.
+        # The ID is stored outside the volumeInfo dictionary.
+        book_id = item.get("id")
+
+        # Extract the book's volume information.
+        volume_info = item.get("volumeInfo", {})
+
         # Extract the title from the API response.
         # A title is required for a valid Book object.
-        id = volume_info.get("id")
         title = volume_info.get("title")
 
         # Reject the result if the title is missing or empty.
@@ -137,7 +141,7 @@ class GoogleBooksClient:
         # We use named arguments to make it clear which
         # API values are being passed into which Book attributes.
         book = Book(
-            id=id,
+            id=book_id,
             title=title,
             authors=authors,
             total_pages=page_count,
