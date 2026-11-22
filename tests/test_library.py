@@ -179,6 +179,25 @@ class TestLibrary(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.library.update_book(self.book_one)
 
+    def test_add_book_with_duplicate_google_books_id(self):
+        # Add the original book to the library.
+        self.library.add_book(self.book_one)
+
+        # Create a separate Book object with the same Google Books ID.
+        duplicate_book = Book(
+            self.book_one.id,
+            self.book_one.title,
+            self.book_one.authors,
+            self.book_one.total_pages
+        )
+
+        # Adding the duplicate should raise a ValueError.
+        with self.assertRaises(ValueError):
+            self.library.add_book(duplicate_book)
+
+        # The library should still contain only one book.
+        self.assertEqual(self.library.total_books, 1)
+
 
 if __name__ == "__main__":
     # Run the tests when this file is executed directly.

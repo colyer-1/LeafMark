@@ -38,8 +38,10 @@ class Library:
             raise TypeError("Only Book objects can be added to the library")
 
         # Prevent the same book object from being added twice.
-        if book in self._books:
-            raise ValueError("This book is already in your library")
+        # Prevent books with the same Google Books ID from being added twice.
+        for existing_book in self._books:
+            if existing_book.id == book.id:
+                raise ValueError("This book is already in your library")
 
         # Save the book to the database.
         self._database.add_book(book)
