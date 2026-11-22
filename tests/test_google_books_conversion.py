@@ -11,26 +11,30 @@ class TestGoogleBooksConversion(unittest.TestCase):
         # Create a fresh GoogleBooksClient before each test.
         self.client = GoogleBooksClient()
 
-        # Simulate the volumeInfo dictionary returned by Google Books.
-        self.volume_info = {
-            "title": "The Pragmatic Programmer",
-            "subtitle": "Your Journey to Mastery",
-            "authors": ["David Thomas", "Andrew Hunt"],
-            "description": "A book about software development.",
-            "pageCount": 352,
-            "publishedDate": "2019-09",
-            "imageLinks": {
-                "thumbnail": "https://example.com/book-cover.jpg"
-            },
-            "averageRating": 4.5
+        # Simulate a complete book item returned by Google Books.
+        self.item = {
+            "id": "google-book-123",
+            "volumeInfo": {
+                "title": "The Pragmatic Programmer",
+                "subtitle": "Your Journey to Mastery",
+                "authors": ["David Thomas", "Andrew Hunt"],
+                "description": "A book about software development.",
+                "pageCount": 352,
+                "publishedDate": "2019-09",
+                "imageLinks": {
+                    "thumbnail": "https://example.com/book-cover.jpg"
+                },
+                "averageRating": 4.5
+            }
         }
 
     def test_convert_to_book(self):
         # ACT
-        book = self.client._convert_to_book(self.volume_info)
+        book = self.client._convert_to_book(self.item)
 
         # ASSERT
         self.assertIsInstance(book, Book)
+        self.assertEqual(book.id, "google-book-123")
         self.assertEqual(book.title, "The Pragmatic Programmer")
         self.assertEqual(book.subtitle, "Your Journey to Mastery")
         self.assertEqual(
@@ -51,15 +55,19 @@ class TestGoogleBooksConversion(unittest.TestCase):
 
     def test_convert_to_book_with_missing_optional_fields(self):
         # ARRANGE
-        volume_info = {
-            "title": "Clean Code",
-            "authors": ["Robert C. Martin"]
+        item = {
+            "id": "google-book-456",
+            "volumeInfo": {
+                "title": "Clean Code",
+                "authors": ["Robert C. Martin"]
+            }
         }
 
         # ACT
-        book = self.client._convert_to_book(volume_info)
+        book = self.client._convert_to_book(item)
 
         # ASSERT
+        self.assertEqual(book.id, "google-book-456")
         self.assertEqual(book.title, "Clean Code")
         self.assertEqual(book.authors, ["Robert C. Martin"])
         self.assertIsNone(book.subtitle)
@@ -71,35 +79,44 @@ class TestGoogleBooksConversion(unittest.TestCase):
 
     def test_convert_to_book_with_missing_image_links(self):
         # ARRANGE
-        volume_info = {
-            "title": "Clean Code",
-            "authors": ["Robert C. Martin"]
+        item = {
+            "id": "google-book-789",
+            "volumeInfo": {
+                "title": "Clean Code",
+                "authors": ["Robert C. Martin"]
+            }
         }
 
         # ACT
-        book = self.client._convert_to_book(volume_info)
+        book = self.client._convert_to_book(item)
 
         # ASSERT
         self.assertIsNone(book.image_url)
 
     def test_convert_to_book_with_missing_title(self):
         # ARRANGE
-        volume_info = {
-            "authors": ["Robert C. Martin"]
+        item = {
+            "id": "google-book-123",
+            "volumeInfo": {
+                "authors": ["Robert C. Martin"]
+            }
         }
 
         # ACT & ASSERT
         with self.assertRaises(ValueError):
-            self.client._convert_to_book(volume_info)
+            self.client._convert_to_book(item)
 
     def test_convert_to_book_with_missing_authors(self):
         # ARRANGE
-        volume_info = {
-            "title": "Clean Code"
+        item = {
+            "id": "google-book-456",
+            "volumeInfo": {
+                "title": "Clean Code"
+            }
         }
 
         # ACT
-        book = self.client._convert_to_book(volume_info)
+        book = self.client._convert_to_book(item)
 
         # ASSERT
         self.assertEqual(book.title, "Clean Code")
@@ -107,4 +124,5 @@ class TestGoogleBooksConversion(unittest.TestCase):
 
 
 if __name__ == "__main__":
+    # Run the tests when this file is executed directly.
     unittest.main()
