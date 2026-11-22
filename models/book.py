@@ -6,6 +6,7 @@ class Book:
 
     def __init__(
             self,
+            id,
             title,
             authors,
             total_pages=None,
@@ -16,6 +17,7 @@ class Book:
             average_rating=None
     ):
         # Store required book information.
+        self._id = id
         self._title = title
         self._authors = authors
 
@@ -33,6 +35,10 @@ class Book:
         self._favourite = False
 
     # Read-only properties for accessing book information.
+    @property
+    def id(self):
+        return self._id
+    
     @property
     def title(self):
         return self._title

@@ -8,6 +8,7 @@ class TestBook(unittest.TestCase):
     def setUp(self):
         # Create a fresh Book instance before each test.
         self.book = Book(
+            id=1,
             title="The Pragmatic Programmer",
             authors="David Thomas and Andrew Hunt",
             total_pages=352,
@@ -16,6 +17,7 @@ class TestBook(unittest.TestCase):
 
     def test_book_initialisation(self):
         # Check that the book information is stored correctly.
+        self.assertEqual(self.book.id, 1)
         self.assertEqual(self.book.title, "The Pragmatic Programmer")
         self.assertEqual(self.book.authors, "David Thomas and Andrew Hunt")
         self.assertEqual(self.book.total_pages, 352)
@@ -36,6 +38,7 @@ class TestBook(unittest.TestCase):
     def test_book_can_be_created_with_only_required_information(self):
         # A book should be created without optional information.
         book = Book(
+            id=2,
             title="Clean Code",
             authors="Robert C. Martin"
         )
@@ -82,6 +85,7 @@ class TestBook(unittest.TestCase):
     def test_progress_when_total_pages_unknown(self):
         # Create a book without a known page count.
         book = Book(
+            id=2,
             title="Clean Code",
             authors="Robert C. Martin"
         )

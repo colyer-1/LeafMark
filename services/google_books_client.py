@@ -103,10 +103,10 @@ class GoogleBooksClient:
 
         Returns:
             A Book object.
-        """
-
+        """ 
         # Extract the title from the API response.
         # A title is required for a valid Book object.
+        id = volume_info.get("id")
         title = volume_info.get("title")
 
         # Reject the result if the title is missing or empty.
@@ -137,6 +137,7 @@ class GoogleBooksClient:
         # We use named arguments to make it clear which
         # API values are being passed into which Book attributes.
         book = Book(
+            id=id,
             title=title,
             authors=authors,
             total_pages=page_count,
