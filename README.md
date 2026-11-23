@@ -1,14 +1,24 @@
 # LeafMark
 
-A Python-based personal book library application that integrates with the Google Books API.
+LeafMark is a Python-based personal book library application that integrates with the Google Books API.
 
-LeafMark allows users to search for books, build a personal library and keep track of their reading activity through an interactive command-line interface.
+It allows users to search for books, build a personal library and track their reading activity.
+
+LeafMark is being developed to support multiple ways of interacting with the same application, including:
+
+- **Console application** – an interactive command-line interface.
+- **Web application** – a browser-based interface (planned).
+- **Future interfaces** – additional ways to access and manage a personal library as the project develops.
+
+The goal is to maintain shared application functionality across these different interfaces, avoiding unnecessary duplication and allowing LeafMark to grow into a flexible, full-stack application.
 
 ## Features
 
 - Search for books using the Google Books API.
 - View book information and details.
 - Add and remove books from a personal library.
+- Prevent duplicate books using Google Books IDs.
+- Persist library data using SQLite.
 - Track reading progress by updating the current page.
 - Calculate reading progress.
 - Mark books as favourites.
@@ -16,31 +26,39 @@ LeafMark allows users to search for books, build a personal library and keep tra
 
 ## Technologies
 
-- **Python** — application development.
-- **Requests** — HTTP requests to the Google Books API.
-- **python-dotenv** — environment variable management.
-- **unittest** — automated testing.
+- **Python** – application development.
+- **SQLite** – persistent data storage.
+- **Requests** – HTTP requests to the Google Books API.
+- **python-dotenv** – environment variable management.
+- **unittest** – automated testing.
+- **Git and GitHub** – version control.
 
 ## Project structure
 
 ```text
 LeafMark/
+├── console/
+│   ├── __init__.py
+│   └── main.py
 ├── models/
 │   ├── book.py
 │   └── library.py
 ├── services/
+│   ├── database.py
 │   └── google_books_client.py
 ├── tests/
 │   ├── test_book.py
 │   ├── test_console.py
+│   ├── test_database.py
 │   ├── test_google_books_client.py
 │   ├── test_google_books_conversion.py
 │   └── test_library.py
 ├── ui/
 │   └── console.py
-├── main.py
+├── .env
+├── .gitignore
 ├── requirements.txt
-└── .gitignore
+└── README.md
 ```
 
 ## Installation
@@ -48,7 +66,7 @@ LeafMark/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/HColyer/LeafMark.git
+git clone https://github.com/colyer-1/LeafMark.git
 cd LeafMark
 ```
 
@@ -92,9 +110,13 @@ Do not commit your `.env` file or share your API key.
 
 ### 5. Run LeafMark
 
+From the project root, launch the console application:
+
 ```bash
-python main.py
+python -m console.main
 ```
+
+The SQLite database and required tables are initialised when the application starts.
 
 ## Running tests
 
@@ -103,18 +125,22 @@ LeafMark uses Python's built-in `unittest` framework.
 Run the complete test suite:
 
 ```bash
-python -m unittest discover -s tests -v
+python -m unittest discover -v
 ```
 
 ## Architecture
 
-LeafMark uses a simple separation of responsibilities:
+LeafMark uses separation of responsibilities to keep the application organised.
 
-- `models/` — represents books and manages library behaviour.
-- `services/` — handles communication with external services such as Google Books.
-- `ui/` — manages command-line interaction and presentation.
-- `tests/` — contains automated tests.
-- `main.py` — coordinates the application.
+- `console/` – contains the command-line application's entry point.
+- `models/` – represents books and manages library behaviour.
+- `services/` – handles database operations and communication with Google Books.
+- `ui/` – manages command-line interaction and presentation.
+- `tests/` – contains automated tests.
+
+The console interface uses shared models and services rather than implementing its own application logic.
+
+The project is intended to support multiple interfaces that interact with the same underlying application functionality and data.
 
 ## Development goals
 
@@ -122,9 +148,11 @@ LeafMark is an ongoing software development project.
 
 Planned improvements include:
 
-- Persistent storage using SQLite.
-- A backend API.
-- A web-based frontend.
-- User accounts and authentication.
+- Introducing Django as a web application backend.
+- Developing a browser-based user interface.
+- Reusing existing application functionality where appropriate.
+- Adding user accounts and authentication.
+- Exploring additional interfaces and ways to access the application.
+- Deploying the application.
 
-The long-term goal is to develop LeafMark from a command-line application into a full-stack web application.
+The long-term goal is to develop LeafMark into a multi-interface application, where users can access the same personal library through different platforms while sharing the underlying application logic, services and database.
